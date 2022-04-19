@@ -21,6 +21,13 @@ Flag format - byuctf{0000}
 ```
 
 #### Solution
+This challenge taught me that you can't always just take code off the internet and expect it to perfectly suit the needs of your situation. Who would've thought? 
+
+The first thing I did was look through the log file with a simple `cat access.log`. I scrolled through the file for a minute just to get a feel for the data I was reading through. Here's an example line:
+```
+34.245.89.123 - - [09/Feb/2022:01:12:57 +0000] "GET /app-ads.txt HTTP/1.1" 200 473 "-" "TprAdsTxtCrawler/1.1"
+```
+This line contains a decent amount of information- an IP address, a timestamp, and details for a HTTP GET request. Fortunately, for this challenge, all we're looking for is a list of unique IP addresses. 
 
 #### Real World Application
 
