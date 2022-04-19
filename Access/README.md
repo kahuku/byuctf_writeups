@@ -31,7 +31,7 @@ Flag format - byuctf{0000}
 
 #### Question
 ```
-Q2. How many attempts were made to grab a .env file?
+How many attempts were made to grab a .env file?
 Flag format - byuctf{0000}
 ```
 
@@ -46,8 +46,53 @@ Flag format - byuctf{0000}
 
 #### Question
 ```
-Q3. What IPs attempted to exploit log4j?
+What IPs attempted to exploit log4j?
 Flag format - byuctf{100.100.100.100_200.200.200.200}
+```
+
+#### Solution
+
+#### Real World Application
+
+---
+
+### Access 4 (Medium)
+* 76 Points
+
+#### Question
+```
+What is the name of the exploit file that would be run in the obfuscated log4j attempt?
+Flag format - byuctf{filename}
+```
+
+#### Solution
+
+#### Real World Application
+
+---
+
+### Access 5 (Hard)
+* 83 Points
+
+#### Question
+```
+What IP addresses attempted to exploit CVE-2021-3129?
+Flag format - byuctf{100.100.100.100_200.200.200.200}
+```
+
+#### Solution
+
+#### Real World Application
+
+---
+
+### Access 6 (Hard)
+* 86 Points
+
+#### Question
+```
+What is the name of the ISP that hosts the Russian IP attempting to exploit CVE-2021-3129?
+Flag format - byuctf{ispname}
 ```
 
 #### Solution
