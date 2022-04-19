@@ -9,8 +9,9 @@ Here is a log file containing HTTP requests sent to a webserver.
 Can you answer all the questions to determine what malicious actors tried to do?
 ```
 
-### Access 1.1 (Easy)
 ---
+
+### Access 1.1 (Easy)
 * 24 Points
 
 #### Question
