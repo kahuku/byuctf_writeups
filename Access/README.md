@@ -19,3 +19,8 @@ Can you answer all the questions to determine what malicious actors tried to do?
 How many unique IP addresses have sent HTTP requests to the web server?
 Flag format - byuctf{0000}
 ```
+
+### Solution
+
+
+### Real World Application
