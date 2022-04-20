@@ -20,7 +20,7 @@ How many unique IP addresses have sent HTTP requests to the web server?
 Flag format - byuctf{0000}
 ```
 
-#### Solution
+#### Attempted Solution
 The first thing I do when confronted with challenges like this is look through the log file with a simple `cat access.log`. I scrolled through the file for a minute just to get a feel for the data I was reading through. Here's an example line:
 ```
 34.245.89.123 - - [09/Feb/2022:01:12:57 +0000] "GET /app-ads.txt HTTP/1.1" 200 473 "-" "TprAdsTxtCrawler/1.1"
@@ -39,6 +39,25 @@ grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" access.log | sort | uniq > access1.1
 `-E` specifies that we want grep to search for strings matching a regular expression that we provide in the double quotes. `-o` prints only the matching portion of the line. Usually, grep returns the entire line that it finds the matching text in, but I prefer using `-o` to simplify the output since I only care about the IP, not the enitre request. Now, I had all the IP addresses from access.log into a single sorted file. Then, I ran `wc -l access1.1` and get the output `148`. `wc` displays the number of lines, words, and bytes contained in each input file. The `-l` option just makes it display the line count. I submitted byuctf{148} and byuctf{0148} and neither of those turned out to be correct. I knew I had an issue.
 
 First, I thought something may be wrong with the regular expression. That was an obvious candidate for the source of my error, as I don't understand regex. I went back to [this site](https://www.shellhacks.com/regex-find-ip-addresses-file-grep/) where I found the expression, and learned that the expression I entered counted all strings between `0.0.0.0`and `999.999.999.999`. I went back to the access1.1 file I created earlier, and didn't see any lines that contained an invalid IP address (anything above `255.255.255.255`) and didn't find anything. So in this case, my regular expression actually wasn't the problem. I looked back at the file and noticed something that shouldn't have been there -- duplicates. I realized my mistake was stringing too many commands together at once. So I ran `grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" access.log > access1.2` and then `cat access1.2 | uniq > access1.2` as separate commands. That still didn't vive me a correct answer, so out of frustration with Linux I decided to just write a Python script.
+
+#### What Actually Worked
+```
+filename = "access.log"
+
+with open(filename) as f:
+    data = f.read()
+    data = data.split("\n")
+    
+    ips = set()
+    
+    for line in data:
+        if (len(line)) > 0:   
+            ip = line.split()[0]
+            ips.add(ip)
+
+    print(len(ips))
+```
+As always, 10 lines of Python can fix all my problems. This script returned `98` to stdout, which was the correct flag. I'm still not sure why my bash commands didn't work, but this Python is prety straightforward to understand. I prefer the `with open (filename) as f:` syntax because it automatically closes the file after the indented section. `data.split("\n")` separates the file into an array using the newline character as a delimiter. I iterated through the list version of the log file and if the line had a character in it (i.e. it wasn't the last line in the file), I would split the line by whitespace, which is the default behavior for the `.split()` command. Taking index 0 of the resulting list returned the IP at the beginning of the command. I then added the IP to a set, because sets don't store duplicates, allowing me to just print the size of the set at the end to get the correct number of unique IP addresses that sent HTTP requests to the server.
 
 #### Real World Application
 
