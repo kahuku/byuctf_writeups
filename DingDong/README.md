@@ -65,9 +65,16 @@ Flag format - byuctf{0000}
 ```
 
 #### Solution
+Thankfully, this one was pretty quick. You can filter all packets by their flags using `tcp.flags`. So, to find all the packets with the ACK flag enabled, all you need to do is filter
+```
+tcp.flags.ack == 1
+```
+
+and let Wireshark tell us how many packets meet the criteria.
 
 #### Real World Application
-
+The ACK flag is enabled on packets after a connection has been established between a sending and receiving machines. So, finding the packets with the ACK flag set shows us all the packets that were successfully received.
+  
 ---
 
 ### Ding Dong 4 (Medium)
