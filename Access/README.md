@@ -60,6 +60,7 @@ with open(filename) as f:
 As always, 10 lines of Python can fix all my problems. This script returned `98` to stdout, which was the correct flag. I'm still not sure why my bash commands didn't work, but this Python is prety straightforward to understand. I prefer the `with open (filename) as f:` syntax because it automatically closes the file after the indented section. `data.split("\n")` separates the file into an array using the newline character as a delimiter. I iterated through the list version of the log file and if the line had a character in it (i.e. it wasn't the last line in the file), I would split the line by whitespace, which is the default behavior for the `.split()` command. Taking index 0 of the resulting list returned the IP at the beginning of the command. I then added the IP to a set, because sets don't store duplicates, allowing me to just print the size of the set at the end to get the correct number of unique IP addresses that sent HTTP requests to the server.
 
 #### Real World Application
+There are a couple of things to take from this challenge. Most worth noting is the idea that challenges can be solved multiple ways. It's absolutely possible to just have used Linux commands to find the flag. Since I'm not an expert in Linux, I was able to utilize my Python talents to accomplish the same goal. Using Python or Linux to parse files like this is a fairly common industry task. In this case, finding the number of IPs that sent HTTP requests to a webserver gives the blue team a list to search through to find attackers.
 
 ---
 
@@ -73,8 +74,15 @@ Flag format - byuctf{0000}
 ```
 
 #### Solution
+This one went significantly quicker. All it took was another `grep` command followed by a `wc`.
+```
+grep .env access.log > envs
+wc -l envs
+```
+I got back `95`, the correct number of requests for .env files.
 
 #### Real World Application
+CLI fundamentals are important. The CLI is often the quickest way to gather information. As for wanting to find what .env files were taken, that's important information to find because .env files store application configuration data that attackers could take advantage of. Many times, .env files store credentials like API tokens, database logins, and other common environment variables.
 
 ---
 
