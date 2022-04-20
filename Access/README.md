@@ -179,5 +179,7 @@ Flag format - byuctf{ispname}
 ```
 
 #### Solution
+From above, we have two IP addresses that attempted to exploit CVE-2021-3129- `45.146.165.37` and `20.24.24.111`. Throwing those IPs into <https://tools.keycdn.com/geo> tells us that `45.146.165.37` is located in Moscow. On that same page, it tells us the provider is Selectel. And thus we have our flag.
 
 #### Real World Application
+Knowing where to gather information on a target IP is helpful. OSINT can tell us a lot about a target, just from their IP address! Whether you're on the blue team or red team, you can gain an advantage by discovering the location of an IP address. In this case, as the defender, we now have a more specific location in which to look for our hackers, and we can investigate potential Russian attackers.
