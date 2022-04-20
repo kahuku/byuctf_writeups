@@ -51,7 +51,8 @@ dns && dns.flags.response == 0 && dns.qry.type == 1
 Which gives the correct flag- byuctf{36}
   
 #### Real World Application
-
+Packets are sent across networks so fast, packet captures get very large very quickly. Any good analyst needs to be able to apply filters to narrow down the information they're sorting through to find the packets they need to analyze. 
+  
 ---
 
 ### Ding Dong 3 (Medium)
