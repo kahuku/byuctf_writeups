@@ -87,8 +87,10 @@ Flag format - byuctf{1.1.1}
 ```
 
 #### Solution
-
+Initially, I didn't realize that protocols other than HTTP had user agents. So when I filtered by HTTP to start narrowing down the field and no packets turned up, I was surprised. However, that lead me to Google how I could search packet contents. After clicking the correct icon in Wireshark, selecting 'Packet Details' in the first dropdown, leaving 'Case sensitive' unchecked, and selecting 'String' in the last dropdown, I was able to search for `redsonic` and got a list of packets listing redsonic as the sources's user agent. Clicking on one of those packets and opening it in the detail window, I was able to find the Linux server version under the Simple Service Discovery Protocol.
+  
 #### Real World Application
+OSINT is powerful. In Wireshark, we can get so much information. Even more than just the actual contents of the packets. In this example, we're finding version numbers of operating systems. A knowledgeable attacker can use this knowledge to scour for potential vulnerabilities in their target.
 
 ---
 
@@ -102,9 +104,11 @@ Flag format - byuctf{10.10.10.10_11.11.11.11}
 ```
 
 #### Solution
+This one took more reading skills than anything else. A quick look over the DNS packets mostly show one server communicating with Ian's laptop (the IP of which we found earlier)- `10.8.0.2`. After looking through the list of packets for another minute or two, I saw the secondary DNS server's IP- `10.8.0.8`.
 
 #### Real World Application
-
+Finding a DNS server is information an attacker can leverage to attack a network. DNS servers are a common target for hackers. In addition to that, this challenge had a surprising application in my life recently. A Windows machine on my home network recently was infected with malware and wasn't able to access the internet despite showing a connection. After inspecting my network packets, I found that all of that machine's DNS requests were going to the wrong place. Instead of going to the Raspberry Pi that I had configured to route DNS traffic through, all my queries headed straight to my printer. After identifying and removing the malware, my internet returned to normal. As it turns out, being able to trace DNS traffic through its proper channels is an incredibly useful skill in troubleshooting network issues.
+  
 ---
 
 ### Ding Dong 6 (Medium)
@@ -116,5 +120,9 @@ What is the hidden flag?
 ```
 
 #### Solution
+Using the technique from above to search for strings within packet info, a search for 'ctf' resulted in this packet
+![packet.png](./packet.png)
+Formatting this peculiar looking string as byuctf{p1ngp0ngers1zc00l} results in a correct flag.
 
 #### Real World Application
+This search ability in Wireshark allows defenders to quickly find packets with specified contents or headers.
