@@ -107,7 +107,7 @@ Yet again, grep comes in handy. A simple `grep jndi acess.log` reutrns a single 
 ```
 
 Now we have the first IP that tried to exploit Log4Shell- `98.0.242.10`. Finding the second one was a bit harder. I looked through a few YouTube videos to try to figure out if there was another way to exploit it. I wasn't able to find any other way. Eventually, I realized that they must've found a way to obfuscate the exploit. A quick Google search turned up the obfuscated exploit code
-![obfuscated](./obfuscated)
+![obfuscated](./obfuscatedLog4j.png)
 
 #### Real World Application
 
