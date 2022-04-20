@@ -10,3 +10,7 @@ Writeups for BYU's end of semester CTF of Winter 2022
 ### OSINT
 
 + [NonSecurityClearance](./NonSecurityClearance) - 442 points
+
+### Reverse Engineering
+
++ [Fun Fact](./FunFact) - 241 points
