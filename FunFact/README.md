@@ -17,4 +17,102 @@ string = "aW1wb3J0IHJhbmRvbSwgc3RyaW5nCiAgICAKZGVmIG9wdGlvbl9vbmUoKToKICAgIHByaW
 exec(base64.b64decode(string))
 ```
 
+The last line gives us the most information. `exec` just executes a Python command. What's being passed in tells us how the code was obfuscated though. `base64.b64decode(string)` takes the variable string and decodes its base64 encryption. So really all this obfuscated code is doing is running a single Python program that is just currently hidden from us. Now, it's time to decode the string. Pasting that string into <www.base64decode.com> gives us the decoded version. It looks to be a perfectly normal Python program. Thankfully it wasn't obfuscated further. I pasted that code into a new Python file and ran it on my machine. We're met with this output
+```
+Enter 1 to print the flag
+Enter 2 for a fun fact about ocean creatures
+Enter 3 to continue
+Input> 
+```
+
+Before even looking at the code, I try some different  to see how the program handles invalid user input. I input `-1`, `0`, `333`, and `100000000000000000` and each time, the program terminates with the output `Invalid option`. So it looks like breaking the program through its input probably isn't the correct approach. Since we do have the source code, the next step is to start looking through that. I always start with the base of the program
+```def main():
+    print("Enter 1 to print the flag")
+    print("Enter 2 for a fun fact about ocean creatures")
+    print("Enter 3 to continue")
+
+    user_input = input("Input> ")
+    
+    if(user_input == '1'):
+        option_one()
+    elif(user_input == '2'):
+        option_two()
+    elif(user_input == '3'):
+        option_three()
+    else:
+        print("Invalid option")
+        
+main()
+```
+
+This is where the program starts. It calls main, which prompts the user for input and then calls respective functions depending on the input. Nothing too special happening here.
+
+```
+def option_one():
+    print("\nJust kidding, it's not that easy\n")
+    main()
+    
+def option_two():
+    random_facts = ["Each arm of an octopus has its own nervous system", "Comb jellies are transparent, bioluminescent, and live in the twilight zone", "Star fish are echinoderms and don't have brains", "Greenland sharks are the slowest sharks and develop parasites in their eyes", "Whale sharks are the largest sharks, with mouths up to 15 feet wide but are only filter feeders", "Basking sharks are also sharks with wide mouths that are only filter feeders", "There are electric stingrays that are able to send electric shocks to predators in order to stun them and escape", "The pacfic octopus is the largest octopus", "There are 8 species of sea turtles, although it is debated that there are only   Leatherback  Olive Riddley  Kemp Riddley  Hawksbill  Loggerhead  Flatback  Green  Black (altough debated to be the same species as Green)", "The leatherback sea turtle is the largest species of sea turtle, growing up to 9 feet long", "The gender of sea turtles is dependent on the temperature where the eggs were laid", "Sea turtles are NOT strictly herbivores but also eat jellyfish", "Sea turtles need to breath air. If they are scared off the beach by humans they could potentially swim out too far and then drown before making it back to land", "Hawksbill sea turtles are hunted down for their shells", "Bro how are jellyfish animals?? They have no brains! Same with sea stars", "Sea stars will kill their pray with acid and then turn their stomachs inside out to eat", "Sharks can also turn their stomachs inside out to regergitate food", "Tiger sharks have incredibly sharp teeth that can bite through metal", "Tiger sharks are called the garbage gut of the sea and there are been license places, tires, and other weird things found in their stomachs", "Some sharks don't have to be constantly moving in order to breath. Buccal pumping vs obligate ram ventilation", "The only bones sharks have are their jaws. Their skeletal structure is made out of cartilage", "The only bones an octopus has is their beak, which is in the center of their arms", "An octopus can fit through anything that their beak can fit through", "Hagfish are so weird guys. They produce a lot of slime", "Octopuses are known to be very smart and very curious creatures. They will investigate and play with scuba divers", "The smallest shark is some type of lantern shark (forgot the exact name)", "Lemon sharks are named such because their skin feels like lemon rinds", "Cookie cutter sharks are named such because their teeth take out small, circular chunks, kind of like a cookie cutter", "Deep sea angler fish: the female is much, much larger than the male", "In the past, people have tried to add great white sharks into aquariums. However, the great whites would just die if they were restricted to such a small space", "The largest jellyfish is called the lions mane", "Most venomous jellyfish is the boxjellyfish", "Most venomous octopus is the blue-ringed octopus", "Most venemous sea snail is the cone snail", "Sand dollars are actually sea urchins", "The crown of thorns is an extremely invasive species of sea star", "The severed limbs of sea stars will grow into another sea star", "People would try to kill the crown of thorns by smashing them, but that backfired because the severed limbs just became another sea star", "Archer fish will spit out water to knock bugs off of plants so that they can eat them", "Baby sharks are called pups", "Zebra sharks are more commonly known as leopard sharks in and around the Andaman Sea, but this is confusing as there is another species of shark called the leopard shark", "Orcas are the largest members of the dolphin family", "Killer whales are the most widely distributed mammals, other than humans and possibly brown rats, according to SeaWorld. They live in every ocean around the world and have adapted to different climates, from the warm waters near the equator to the icy waters of the North and South Pole regions"]
+    random_number = random.randint(0, 42)
+    print("\n", random_facts[random_number], "\n")
+    main()
+```
+Nothing too important is happening here either. Option one just tells us that it won't just give us the flag. Option two prints a random sea creature fact. Both of them finish by calling `main()` again. So, it looks like option 3 is the code we care about
+
+```
+def option_three():
+    user_input = input("\nFlag> ")
+  
+    random_array = xor("Snowflake eels have two sets of jaws", "pretty crazy, huh?") 
+    other_random_array = list(string.printable)
+    key = other_random_array[random_array[0] + random_array[8]]
+    
+    encrypted = "".join([chr(ord(x) ^ ord(key)) for x in user_input])
+    print("encrypted: ", encrypted)
+
+    if(encrypted == 'g%4c$zc%dz4gg;'):
+        print("Success!")
+    else:
+        print("\nTry again")
+        option_three()
+
+def xor(a, b):
+    key = []
+    i = 0
+    while i < len(a):
+        key.append(ord(a[i % len(a)]) ^ ord((b[i % len(b)])))
+        i = i+1
+    return key
+```
+Option 3 starts by prompting the user for input. Then it calls a custom `xor` function on two hardcoded strings. That's great news for us. Since the strings are hardcoded in, we know that `random_array` will be initialized to the same value every time, regardless of the user's input. That allows us to simplify our code. It looks like `random_array` is only used two lines later, where the values at two hardcoded indexes are added together. Then, key is set to the value of `other_random_array` at that resulting index. `other_random_array` is just the following printable characters made into a list
+```
+0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+, -./:;<=>?@[\]^_`{|}~ 
+```
+So at this point, we can confirm that `key` will be the same value every time we run this code. So, I just added a `print(key)` after it's initialized and ran the code with random input. `W` is printed to the terminal. So now that we know what `key` is, it's fairly straightforward to reverse engineer the next few lines. It looks like the encrypted version of the user input will be printed, and if it's equal to the string `g%4c$zc%dz4gg;`, then that will be the correct flag. So basically, all we need to do is break down the line that assigns the value of `encrypted` and write some code to revese the process. `ord` returns the unicode code of a given character. So, that line first binary xors the unicode codes of the first character in the user's input with the caracter W. Then, it converts that xor-ed unicode back into a character. It repeates this for every character in user input using list comprehension, and then joins the result of that operation with the empty string to turn the result into a single string. So, all weneed to do is write code that does the inverse of this to the string `g%4c$zc%dz4gg;` to tell us what we need to enter to get the flag. There's definitely a more succint way to write this code, but I wanted to test my coce incrementally, so I wrote it in a way that may have not been the most efficient or elegant. Here's what I came up with
+
+```
+key = 'W'
+encrypted = "g%4c$zc%dz4gg;"
+
+s = []
+for char in encrypted:
+    s.append(ord(char))
+
+l = []
+for num in s:
+    l.append(num ^ ord("W"))
+
+s = ''
+for num in l:
+    char = chr(num)
+    s += char
+print(s)
+```
+We start by taking the unicode equivalent of every character in the encrypted string and adding that to a list. Then, for each unicode character in that list, I took the bitwise xor of that character with 'W' and added that result to a new list. Then finally, I converted each unicode character in that list back into a character and appended it to an empty string which I printed at the end. Running that code gives us the correct flag
+```
+byuctf{0rc4s-4r3-c00l}
+```
+
 ## Real World Application
+This problem taught me so many skills. First, was how to decode base64. Once I did that, I had some code that I had to reverse engineer. Being able to read and understand someone else's code is a talent in and of itself. It took a methodical and very step-by-step approach to determine how the `key` variable was being assigned. Once we were able to find out that key was just a static character that they tried to obfuscate, we were able to start breaking down the encryption method line by line. After I understood every single thing in that line, I was able to basically find the inverse of every function the code used, put them together in the reverse order, and used that to generate the input that the code was looking for. This is an extremely important skill to have. Interpreting someone else's code and genuinely understanding it is difficult, but once you're able to do that, you can figure out how to write code to basically undo everything the original code does, which is a very common challenge for reverse engineers.
